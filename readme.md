@@ -1,10 +1,14 @@
 # 操作系统学习
 
+[TOC]
+
+
+
 ### 进程管理
 
 ##### Linux进程管理
 
-###### 	进程描述符task_struct:
+###### 	进程描述符 task_struct
 
  	1. 进程状态
       	1. state
@@ -45,4 +49,16 @@
     	2. struct mm_struct *active_mm //指向进程最近常使用的地址空间，普通进程active_mm和mm相同
     	3. struct fs_struct *fs //表示进程与文件系统的联系，如进程的当前目录和根目录
     	4. struct files_struct *files //记录进程当前打开的文件，前三项分别预先设置为标准输入、标准输出和出错信息输出文件
-    	5. 
+	6. void *stack //指向进程内核栈始址
+	7. 进程信号处理相关信息
+    	1. sigset_t saved_sigmask //进程的信号掩码，置位表示屏蔽，复位表示不屏蔽
+    	2. struct signal_struct *signal //指向进程的信号描述符
+    	3. struct sighand_struct *sighand //指向进程的信号处理程序描述符
+    	4. struct sigpending pending //记录进程所有已经触发但是还没有处理的信号
+    	5. sigset_t blocked, real_blocked //被阻塞信号的掩码，后者表示临时掩码
+	8. 时间及定时器相关信息
+    	1. cputime_t utime, stime //记录进程在用户态(utime)和内核态(stime)的运行时间
+    	2. u64 start_time //进程创建时间
+    	3. unsigned long timer_slack_ns //进程不活跃时间，单位ns，常用于poll()（文件描述符轮询函数）和select()（文件描述符轮询函数）
+
+###### 进程创建
